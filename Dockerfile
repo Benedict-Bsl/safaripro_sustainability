@@ -15,7 +15,7 @@ RUN apk update && apk add python3-dev gcc libc-dev libffi-dev && \
 
 # Copy rest of the application
 COPY . /app/
-EXPOSE 8010
+EXPOSE 8000
 
 COPY ./entrypoint.sh /app/
 RUN chmod +x /app/entrypoint.sh
