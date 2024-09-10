@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-import psycopg2
+import pymysql
+pymysql.install_as_MySQLdb()
+
 import os
 from dotenv import load_dotenv
 
@@ -68,11 +70,11 @@ TEMPLATES = [
         "DIRS": [],
         "APP_DIRS": True,
         "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+            "context_procesustainabilityrs": [
+                "django.template.context_procesustainabilityrs.debug",
+                "django.template.context_procesustainabilityrs.request",
+                "django.contrib.auth.context_procesustainabilityrs.auth",
+                "django.contrib.messages.context_procesustainabilityrs.messages",
             ],
         },
     },
@@ -98,12 +100,12 @@ else:
     # take postgres db
     DATABASES = {
         "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            'NAME': os.environ.get('DB_NAME', 'postgres'),
-            'USER': os.environ.get('DB_USER', 'postgres'),
-            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', 'localhost'),
-            'PORT': os.environ.get('DB_PORT', '5432'),
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('MYSQL_DATABASE', 'postgres'),
+            'USER': os.environ.get('MYSQL_USER', 'postgres'),
+            'PASSWORD': os.environ.get('MYSQL_PASSWORD', ''),
+            'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
+            'PORT': os.environ.get('MYSQL_PORT', '3306'),
         }
     }
 

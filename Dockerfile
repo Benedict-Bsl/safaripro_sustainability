@@ -1,23 +1,23 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim
+FROM python:3.9-alpine
 
-# Set the working directory inside the container
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
+# Install dependencies
+COPY requirements.txt /app/
+RUN apk update && apk add python3-dev gcc libc-dev libffi-dev && \
+  pip install --upgrade pip && \
+  pip install -r /app/requirements.txt && \
+  pip install --upgrade markdown
 
-# Install any required dependencies specified in requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
 
-# Make port 8000 available to the world outside this container
+# Copy rest of the application
+COPY . /app/
 EXPOSE 8000
 
-# Define environment variable
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+COPY ./entrypoint.sh /app/
+RUN chmod +x /app/entrypoint.sh
 
-RUN chmod +x entrypoint.sh
-
-# Run the entrypoint script to start the application
 ENTRYPOINT ["/app/entrypoint.sh"]
