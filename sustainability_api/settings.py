@@ -16,31 +16,22 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-#define a folder conating media or picture content
-MEDIA_URL='/conservation_projects/'
-MEDIA_ROOT = os.path.join(BASE_DIR,'conservation_projects')
+PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
+env_path = os.path.join(BASE, '.env')
+load_dotenv(dotenv_path=env_path)
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = "django-SecretKey-j$6g99%^!92l2-fezakz#0qw%$6vh5(f2iby_rbx1#!6#1#fy9"
+SECRET_KEY = os.getenv("SECRET_KEY")
 
-# # SECURITY WARNING: don't run with debug turned on in production!
-# DEBUG = True
+DEBUG = True
 
-# ALLOWED_HOSTS = ['10.0.2.2', 'localhost', '127.0.0.1']
-
-# # Application definition
-SECRET_KEY = os.environ.get('SECRET_KEY', 'default-secret-key')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
-
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', '').split(',')
+ALLOWED_HOSTS = [
+    "*",
+    "safaripro.net",
+]
 
 
 
@@ -93,28 +84,28 @@ WSGI_APPLICATION = "sustainability_api.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-DATABASES = {
-    # "default" :{
-    #     "ENGINE": "django.db.backends.sqlite3",
-    #     "NAME": BASE_DIR / "db.sqlite3",
-    # },
-    # "default": {
-    #     "ENGINE": "django.db.backends.postgresql",
-    #     "NAME": "postgres",
-    #     "USER": "postgres",
-    #     "PASSWORD":"123",
-    #     "HOST": "localhost",
-    #     "PORT":"5432",
-    # }
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        'NAME': os.environ.get('DB_NAME', 'postgres'),
-        'USER': os.environ.get('DB_USER', 'postgres'),
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
-        'HOST': os.environ.get('DB_HOST', 'localhost'),
-        'PORT': os.environ.get('DB_PORT', '5432'),
+ENV = str(os.environ.get('ENV', 'development')).lower()
+
+if ENV == 'development':
+    # take sql lite db
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
+else:
+    # take postgres db
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            'NAME': os.environ.get('DB_NAME', 'postgres'),
+            'USER': os.environ.get('DB_USER', 'postgres'),
+            'PASSWORD': os.environ.get('DB_PASSWORD', ''),
+            'HOST': os.environ.get('DB_HOST', 'localhost'),
+            'PORT': os.environ.get('DB_PORT', '5432'),
+        }
+    }
 
 
 
@@ -161,3 +152,56 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 #CORS settings
 CORS_ALLOW_ALL_ORIGINS = True
+
+# Internationalization
+# https://docs.djangoproject.com/en/3.2/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'Africa/Dar_es_Salaam'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+STATIC_URL = 'static/'
+STATICFILES_DIRS = ('%s/static'%BASE),
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = os.path.join(BASE, 'static/media')
+
+AUTOCOMMIT = True
+
+if os.getenv("ALLOW_LOCALHOST") == "YES":
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://\w+\.safaripro\.net$",
+        r"^https://\w+\.safaripro\.co\.tz$",
+        "*",
+    ]
+else:
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://\w+\.safaripro\.net$",
+        r"^https://\w+\.safaripro\.co\.tz$",
+    ]
+
+
+CORS_ALLOW_ALL_ORIGINS = False
+
+if os.getenv("ALLOW_LOCALHOST") == "YES":
+    CSRF_TRUSTED_ORIGINS = [
+        """ Allow all subdomains of safaripro.co.tz """
+        r"^https://\w+\.safaripro\.net$",
+        r"^https://\w+\.safaripro\.co\.tz$",
+        "*",
+    ]
+else:
+    CSRF_TRUSTED_ORIGINS = [
+        """ Allow all subdomains of safaripro.co.tz """
+        r"^https://\w+\.safaripro\.net$",
+        r"^https://\w+\.safaripro\.co\.tz$",
+    ]
