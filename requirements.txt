@@ -14,3 +14,4 @@ boto3==1.26.147
 pandas==2.2
 redis
 requests
+python-dotenv
