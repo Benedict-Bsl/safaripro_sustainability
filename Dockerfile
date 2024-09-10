@@ -12,14 +12,14 @@ RUN apk update && apk add python3-dev gcc libc-dev libffi-dev && \
   pip install -r /app/requirements.txt && \
   pip install --upgrade markdown
 
-
-# Copy rest of the application
-COPY . /app/
-EXPOSE 8000
-EXPOSE 5432
-
+# Copy the entrypoint script first and set executable permissions
 COPY ./entrypoint.sh /app/
 RUN chmod +x /app/entrypoint.sh
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+# Copy rest of the application
+COPY . /app/
 
+EXPOSE 8000
+EXPOSE 5432
+
+ENTRYPOINT ["/app/entrypoint.sh"]
