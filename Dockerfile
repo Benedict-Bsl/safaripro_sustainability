@@ -1,3 +1,6 @@
+
+#!/bin/sh
+
 FROM python:3.9-alpine
 
 ENV PYTHONDONTWRITEBYTECODE 1
