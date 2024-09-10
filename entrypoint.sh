@@ -1,7 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
-python3 manage.py makemigrations
+# Exit immediately if a command exits with a non-zero status
+set -e
 
-python3 manage.py migrate
+# Run migrations (if using Django or Flask-Migrate)
+python manage.py migrate
 
-python3 manage.py runserver 0.0.0.0:8000
+# Start the application server (Django or Flask-based)
+python manage.py runserver 0.0.0.0:8000

@@ -1,9 +1,13 @@
+#!/bin/bash
+
 docker network rm proxy || true
 
 docker network create proxy
 
 touch acme.json && chmod 600 acme.json
 
-docker compose up  -build -d
+# Build and run the Docker Compose setup
+docker-compose up --build -d
 
-docker compose exec sustainability python manage.py migrate --noinput
+# Optional: Tail the logs of the services
+docker-compose logs -f
