@@ -17,7 +17,8 @@ RUN apk update && apk add python3-dev gcc libc-dev libffi-dev && \
 COPY . /app/
 EXPOSE 8000
 
-COPY ./entrypoint.sh /app/
-RUN chmod +x /app/entrypoint.sh
+RUN python3 manage.py makemigrations
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+RUN python3 manage.py migrate
+
+CMD python3 manage.py runserver 0.0.0.0:8000
