@@ -1,6 +1,6 @@
 #converting models into data specific types
 from rest_framework import serializers
-from .models import SustainabilityGoal, CarbonFootprint, SustainableActs, ParticipationChallenge, EcoChallenge, SustainableCharity, Donations, ConservationInitiatives, EducationArticle, Artist, ArtWork
+from .models import SustainabilityGoal, CarbonFootprint, SustainableActs, ParticipationChallenge, EcoChallenge, SustainableCharity, Donations, ConservationInitiatives, EducationArticle, Artist, ArtWork,CarbonCredit
 from django.contrib.auth.models import User
 
 #serializing user data
@@ -10,6 +10,8 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id','username','email']
 
 class SustainabilityGoalSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+
     class Meta:
         model = SustainabilityGoal
         fields = '__all__'
@@ -62,6 +64,13 @@ class ConservationInitSerializer(serializers.ModelSerializer):
         model = ConservationInitiatives
         fields = '__all__'
 
+class CarbonCreditSerializer(serializers.ModelSerializer):
+    # user = UserSerializer(read_only=True)    
+    class Meta:
+        model = CarbonCredit
+        fields = '__all__'
+
+
 class EducationArticleSerializer(serializers.ModelSerializer):
     featured_image_url = serializers.SerializerMethodField()
 
@@ -94,7 +103,9 @@ class WorkSerializer(serializers.ModelSerializer):
     artist_id = serializers.PrimaryKeyRelatedField(queryset=Artist.objects.all(), source='artist')  # Include artist details in the work
     artist_name = serializers.CharField(source='artist.artist_name', read_only=True) 
     artwork_image_url = serializers.SerializerMethodField()
-
+    artist_profile = serializers.ImageField(source='artist.profile_picture',read_only=True)
+    artist_bio = serializers.CharField(source='artist.bio', read_only=True)
+    
     class Meta:
         model = ArtWork
         fields = '__all__'

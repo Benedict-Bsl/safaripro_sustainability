@@ -28,6 +28,9 @@ class EcoChallengeViewSet(viewsets.ModelViewSet):
     queryset = EcoChallenge.objects.all()
     serializer_class = EcoChallengeSerializer
 
+class CarbonCreditViewSet(viewsets.ModelViewSet):
+    queryset = CarbonCredit.objects.all()
+    serializer_class = CarbonCreditSerializer
 
 class ParticipationChallengeViewSet(viewsets.ModelViewSet):
     queryset = ParticipationChallenge.objects.all()
