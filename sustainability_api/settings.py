@@ -20,8 +20,9 @@ from dotenv import load_dotenv
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
-BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+#define a folder conating media or picture content
+MEDIA_URL='/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 env_path = os.path.join(BASE, '.env')
 load_dotenv(dotenv_path=env_path)

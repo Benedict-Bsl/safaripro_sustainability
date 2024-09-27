@@ -34,7 +34,13 @@ class CarbonFootprint(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s Carbon Footprint on {self.date}"
+#carbon credit score
+class CarbonCredit(models.Model):
+    # donor_id = models.TextField(User, on_delete=models)
+    donation_date = models.DateTimeField(auto_now_add=True)
+    donation_amount = models.FloatField()
 
+ 
 class SustainableActs(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     action_type = models.CharField(max_length=50)
@@ -112,9 +118,9 @@ class Donations(models.Model):
 #Education
 class EducationArticle(models.Model):
     title = models.CharField(max_length=255)
-    slug = models.SlugField(unique=True, max_length=255)
+    slug = models.SlugField(unique=True, max_length=255, editable=False)
     content = models.TextField()
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.TextField(blank=True) #(User, on_delete=models.CASCADE)
     published_date = models.DateTimeField(auto_now_add=True)
     updated_date = models.DateTimeField(auto_now=True)
     status = models.CharField(max_length=10, choices=[('draft', 'Draft'), ('published', 'Published')], default='draft')
@@ -127,6 +133,11 @@ class EducationArticle(models.Model):
 
     class Meta:
         ordering = ['-published_date']
+    
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug=slugify(self.title)
+        super().save(*args, **kwargs)
 
     @property
     def featured_image_url(self):
@@ -134,6 +145,7 @@ class EducationArticle(models.Model):
         if self.featured_image:
             return self.featured_image.url
         return None
+
 class Artist(models.Model):
     artist_name = models.CharField(max_length=255)
     bio = models.TextField(blank=True, null=True)
