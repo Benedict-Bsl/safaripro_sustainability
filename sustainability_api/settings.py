@@ -3,7 +3,7 @@ from datetime import timedelta
 from decouple import config
 import pymysql
 pymysql.install_as_MySQLdb()
-
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY= config('SECRET_KEY')
 DEBUG = True
