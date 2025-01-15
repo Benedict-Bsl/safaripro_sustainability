@@ -31,10 +31,12 @@ RUN apk update && \
 # Copy the rest of the application code
 COPY . /app/
 
+# Expose the port the app runs on
 EXPOSE 8001
 
-RUN python3 manage.py makemigrations
+# Ensure the entrypoint script is executable
+COPY ./entrypoint.sh /app/
+RUN chmod +x /app/entrypoint.sh
 
-RUN python3 manage.py migrate
-
-CMD python3 manage.py runserver 0.0.0.0:8000
+# Use bash to run the entrypoint script
+ENTRYPOINT ["/bin/bash", "/app/entrypoint.sh"]
