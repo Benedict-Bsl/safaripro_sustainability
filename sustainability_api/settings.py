@@ -1,8 +1,6 @@
 from pathlib import Path
 from datetime import timedelta
 from decouple import config
-import pymysql
-pymysql.install_as_MySQLdb()
 import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -69,26 +67,26 @@ WSGI_APPLICATION = "sustainability_api.wsgi.application"
 
 ENV = str(config('ENV', 'development')).lower()
 
-if ENV == 'development':
-    # take sql lite db
+if config('ENV') == 'PRODUCTION':
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql",
+            "NAME": config("POSTGRES_DB"),
+            "USER": config("POSTGRES_USER"),
+            "PASSWORD": config("POSTGRES_PASSWORD"),
+            "HOST": config("POSTGRES_HOST"),
+            
+            }
+        } 
+
+else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
         }
     }
-else:
-    # take postgres db
-    DATABASES = {
-        "default": {
-            'ENGINE': 'django.db.backends.mysql',
-            'NAME': config('MYSQL_DATABASE', 'postgres'),
-            'USER': config('MYSQL_USER', 'postgres'),
-            'PASSWORD': config('MYSQL_PASSWORD', ''),
-            'HOST': config('MYSQL_HOST', 'localhost'),
-            'PORT': config('MYSQL_PORT', '3306'),
-        }
-    }
+
 
 
 
