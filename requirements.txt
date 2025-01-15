@@ -24,3 +24,4 @@ urllib3
 whitenoise
 boto3
 redis
+pillow
