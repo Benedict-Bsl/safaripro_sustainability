@@ -32,7 +32,7 @@ services:
       - static_volume:/app/sustainability/staticfiles
       - media_volume:/app/sustainability/media
     ports:
-      - "8002:80"
+      - "8005:80"
     depends_on:
       - sustainability
     networks:
