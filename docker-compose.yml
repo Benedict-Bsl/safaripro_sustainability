@@ -27,7 +27,7 @@ services:
 
   nginx:
     image: nginx
-    container_name: nginx
+    container_name: nginx_sustainability  
     volumes:
       - static_volume:/app/sustainability/staticfiles
       - media_volume:/app/sustainability/media
@@ -37,6 +37,7 @@ services:
       - sustainability
     networks:
       - proxy
+
 
 networks:
   proxy:
