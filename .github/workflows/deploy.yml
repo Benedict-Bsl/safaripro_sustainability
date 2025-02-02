@@ -27,7 +27,7 @@ jobs:
     - name: Upload Docker Image to DigitalOcean
       uses: appleboy/scp-action@master
       with:
-        host: ${{ secrets.DIGITALOCEAN_IP }}
+        host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABILITY }}
         username: root
         key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
         source: "django-app.tar"
@@ -41,7 +41,7 @@ jobs:
     - name: SSH into DigitalOcean and Deploy
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.DIGITALOCEAN_IP }}
+        host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABILITY }}
         username: root
         key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
         script: |
