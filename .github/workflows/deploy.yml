@@ -3,7 +3,7 @@ name: Deploy Django App to DigitalOcean
 on:
   push:
     branches:
-      - main  # Adjust this if your branch name is different
+      - main
 
 jobs:
   build:
@@ -24,14 +24,16 @@ jobs:
       run: |
         docker save -o django-app.tar django-app:latest
 
-    - name: Upload Docker Image to DigitalOcean
+    - name: Upload Docker Image to DigitalOcean via SCP
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABILITY }}
-        username: root
-        key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+        username: ${{ secrets.DIGITALOCEAN_USER }}
+        password: ${{ secrets.DIGITALOCEAN_PASS_SUSTAINABILITY }}
+        port: 22
         source: "django-app.tar"
-        target: "/root"
+        target: "/tmp/"  # Upload to /tmp/ instead of /root/
+        timeout: "100s"
 
   deploy:
     runs-on: ubuntu-latest
@@ -42,9 +44,11 @@ jobs:
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABILITY }}
-        username: root
-        key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
+        username: ${{ secrets.DIGITALOCEAN_USER }}
+        password: ${{ secrets.DIGITALOCEAN_PASS_SUSTAINABILITY }}
+        port: 22
         script: |
+          mv /tmp/django-app.tar /root/django-app.tar  # Move file to root directory
           docker load -i /root/django-app.tar
           docker stop django-app || true
           docker rm django-app || true
