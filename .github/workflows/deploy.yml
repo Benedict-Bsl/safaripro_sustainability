@@ -33,7 +33,7 @@ jobs:
         port: 22
         source: "django-app.tar"
         target: "/root"
-        timeout: 60
+        timeout: 100
 
   deploy:
     runs-on: ubuntu-latest
