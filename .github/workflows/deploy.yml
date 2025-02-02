@@ -28,11 +28,11 @@ jobs:
       uses: appleboy/scp-action@master
       with:
         host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABILITY }}
-        username: ${{ secrets.DIGITALOCEAN_USER }}
-        password: ${{ secrets.DIGITALOCEAN_PASS_SUSTAINABILITY }}
+        username: root
+        key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
         port: 22
         source: "django-app.tar"
-        target: "/tmp/"  # Upload to /tmp/ instead of /root/
+        target: "/root"
         timeout: "100s"
 
   deploy:
@@ -43,12 +43,11 @@ jobs:
     - name: SSH into DigitalOcean and Deploy
       uses: appleboy/ssh-action@master
       with:
-        host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABILITY }}
-        username: ${{ secrets.DIGITALOCEAN_USER }}
-        password: ${{ secrets.DIGITALOCEAN_PASS_SUSTAINABILITY }}
+        host: ${{ secrets.DIGITALOCEAN_IP_SUSTAINABIITY }}
+        username: root
+        key: ${{ secrets.DIGITALOCEAN_SSH_KEY }}
         port: 22
         script: |
-          mv /tmp/django-app.tar /root/django-app.tar  # Move file to root directory
           docker load -i /root/django-app.tar
           docker stop django-app || true
           docker rm django-app || true
