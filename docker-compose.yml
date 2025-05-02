@@ -42,7 +42,7 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.http.routers.sustainability.rule=Host(`sustainability.tradesync.software`)"
+      - "traefik.http.routers.sustainability.rule=Host(`sustainability.safaripro.net`)"
       - "traefik.http.routers.sustainability.entrypoints=websecure"
       - "traefik.http.routers.sustainability.tls=true"
       - "traefik.http.routers.sustainability.tls.certresolver=letsencrypt"
