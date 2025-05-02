@@ -1,9 +1,10 @@
 #importing libraries
 from django.db import models
-from django.contrib.auth.models import User 
+from django.contrib.auth import get_user_model
 from django.utils.text import slugify 
 from django.core.validators import *
 
+User = get_user_model()
 #class defining sustainability goals
 class SustainabilityGoal(models.Model):
     title = models.CharField(max_length=100)

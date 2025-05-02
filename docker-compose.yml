@@ -1,49 +1,86 @@
-
 services:
+  traefik:
+    image: traefik:2.8
+    container_name: traefik
+    restart: unless-stopped
+    networks:
+      - proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik.yml:/traefik.yml:ro"
+      - "./acme.json:/acme.json"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.port=80"
+      - "traefik.docker.network=proxy"
+      - "traefik.http.routers.traefik.service=traefik"
+      - "traefik.http.routers.traefik.service=api@internal"
+
   sustainability:
+    image: safaripro-sustainability
     build:
       context: .
       dockerfile: Dockerfile
     container_name: sustainability
-    env_file:
-      - .env
-    ports:
-      - "8003:8003"
+    restart: always
     volumes:
       - .:/app
-    restart: unless-stopped
+    environment:
+      - DB_HOST=database
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - NATS_URL=nats://nats:4222
+    env_file:
+      - .env
     networks:
       - proxy
+    ports:
+      - "8080:8080"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
-      - "traefik.port=80"
-      - "traefik.http.routers.sustainability.tls=true"
-      - "traefik.http.routers.sustainability.rule=Host(`sustainability.safaripro.net`)"
+      - "traefik.http.routers.sustainability.rule=Host(`sustainability.tradesync.software`)"
       - "traefik.http.routers.sustainability.entrypoints=websecure"
+      - "traefik.http.routers.sustainability.tls=true"
       - "traefik.http.routers.sustainability.tls.certresolver=letsencrypt"
-      - "traefik.http.routers.sustainability.service=sustainability"
-      - "traefik.http.services.sustainability.loadbalancer.server.port=8003"
+      - "traefik.http.services.sustainability.loadbalancer.server.port=8080"
 
-  nginx:
-    image: nginx
-    container_name: nginx_sustainability  
-    volumes:
-      - static_volume:/app/sustainability/staticfiles
-      - media_volume:/app/sustainability/media
-    ports:
-      - "8005:80"
-    depends_on:
-      - sustainability
+  redis:
+    image: redis:6
+    container_name: redis
     networks:
       - proxy
+    ports:
+      - "6379:6379"
 
+  nats:
+    image: nats:latest
+    container_name: nats
+    networks:
+      - proxy
+    ports:
+      - "4222:4222"
+      - "6222:6222"
+      - "8222:8222"
+    restart: unless-stopped
+
+  database:
+    image: postgres:13
+    container_name: database
+    networks:
+      - proxy
+    env_file:
+      - .env
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+
+volumes:
+  db_data:
 
 networks:
   proxy:
     external: true
-
-volumes:
-  media_volume:
-  static_volume:
-  app:

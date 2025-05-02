@@ -25,6 +25,6 @@ router.register(r'artworks', WorkViewSet)
 #registering url parterns
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('api/', include(router.urls)),
+    path('api/V1/', include(router.urls)),
     path('',include('api.urls')),
 ]
