@@ -1,24 +1,4 @@
 services:
-  traefik:
-    image: traefik:2.8
-    container_name: traefik
-    restart: unless-stopped
-    networks:
-      - proxy
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - "/var/run/docker.sock:/var/run/docker.sock:ro"
-      - "./traefik.yml:/traefik.yml:ro"
-      - "./acme.json:/acme.json"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.port=80"
-      - "traefik.docker.network=proxy"
-      - "traefik.http.routers.traefik.service=traefik"
-      - "traefik.http.routers.traefik.service=api@internal"
-
   sustainability:
     image: safaripro-sustainability
     build:
@@ -26,19 +6,20 @@ services:
       dockerfile: Dockerfile
     container_name: sustainability
     restart: always
+    # only for developement
     volumes:
       - .:/app
     environment:
-      - DB_HOST=database
+      - DB_HOST=database_sust
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-      - NATS_URL=nats://nats:4222
+      - NATS_URL=nats://nats_sustain:4223
     env_file:
       - .env
     networks:
       - proxy
     ports:
-      - "8080:8080"
+      - "8003:8003"
     labels:
       - "traefik.enable=true"
       - "traefik.docker.network=proxy"
@@ -46,7 +27,7 @@ services:
       - "traefik.http.routers.sustainability.entrypoints=websecure"
       - "traefik.http.routers.sustainability.tls=true"
       - "traefik.http.routers.sustainability.tls.certresolver=letsencrypt"
-      - "traefik.http.services.sustainability.loadbalancer.server.port=8080"
+      - "traefik.http.services.sustainability.loadbalancer.server.port=8003"
 
   redis:
     image: redis:6
@@ -58,25 +39,28 @@ services:
 
   nats:
     image: nats:latest
-    container_name: nats
+    container_name: nats_sustain
     networks:
       - proxy
     ports:
-      - "4222:4222"
-      - "6222:6222"
-      - "8222:8222"
+      - "4223:4222"
+      - "6223:6222"
+      - "8223:8222"
     restart: unless-stopped
 
-  database:
+  database_sust:
     image: postgres:13
-    container_name: database
+    container_name: database_sust
     networks:
       - proxy
     env_file:
       - .env
     ports:
-      - "5432:5432"
+      - "5433:5432"
     restart: unless-stopped
+
+    volumes:
+        - db_data:/var/lib/postgresql/data
 
 volumes:
   db_data:
